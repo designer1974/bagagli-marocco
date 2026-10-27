@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bagagli Autista</string>
+    <string name="tab_trip">Viaggio</string>
+    <string name="tab_scan">Scansiona</string>
+    <string name="tab_deliver">Consegna</string>
+    <string name="tab_sign">Firma</string>
+
+    <string name="trip_title">Viaggio di oggi</string>
+    <string name="progress">%1$d di %2$d consegne</string>
+    <string name="ferry">Traghetto</string>
+    <string name="ferry_info">Imbarco entro %1$s · partenza %2$s</string>
+    <string name="deliveries">Consegne</string>
+    <string name="bags_count">%1$d bagagli</string>
+    <string name="kind_home">A casa</string>
+    <string name="kind_agency">Ritiro in agenzia</string>
+    <string name="status_delivered">Consegnato</string>
+    <string name="status_next">Prossima</string>
+    <string name="status_pending">In attesa</string>
+    <string name="go_next">Vai alla prossima consegna</string>
+    <string name="all_done">Tutte le consegne completate</string>
+    <string name="to_sync">%1$d dati da inviare al server</string>
+    <string name="all_synced">Tutto salvato</string>
+
+    <string name="scan_aim">Inquadra l\'etichetta QR del bagaglio</string>
+    <string name="scan_no_permission">Serve il permesso della fotocamera per leggere i QR.</string>
+    <string name="scan_allow">Consenti fotocamera</string>
+    <string name="scan_ok">Bagaglio letto</string>
+    <string name="scan_wrong_stop">Questo bagaglio è per un\'altra fermata: %1$s</string>
+    <string name="scan_unknown">Codice non trovato: %1$s</string>
+    <string name="scan_already">Già scaricato</string>
+    <string name="unloaded_here">Scaricati per questa fermata</string>
+    <string name="type_code">Scrivi codice</string>
+    <string name="code_hint">Codice bagaglio (es. BM-26-0412)</string>
+    <string name="confirm">Conferma</string>
+    <string name="report_damage">Segnala danno</string>
+    <string name="damage_saved">Danno segnalato per %1$s</string>
+    <string name="still_to_unload">Ancora da scaricare</string>
+    <string name="bag_unloaded">Scaricato</string>
+    <string name="bag_missing">Da scaricare</string>
+    <string name="bag_damaged">Danneggiato</string>
+    <string name="no_stop">Nessuna fermata attiva</string>
+
+    <string name="stop_n_of">Fermata %1$d di %2$d</string>
+    <string name="open_maps">Google Maps</string>
+    <string name="open_waze">Waze</string>
+    <string name="nav_note">Apre la navigazione con l\'indirizzo già inserito.</string>
+    <string name="call">Chiama</string>
+    <string name="no_nav_app">App di navigazione non installata.</string>
+    <string name="bags_for_stop">Bagagli per questa fermata</string>
+    <string name="scan_bags">Scansiona bagagli</string>
+    <string name="go_sign">Conferma consegna</string>
+
+    <string name="sign_title">Conferma consegna</string>
+    <string name="unloaded_of">%1$d / %2$d bagagli scaricati</string>
+    <string name="recipient_code">Codice del destinatario</string>
+    <string name="recipient_code_hint">4 cifre ricevute via SMS</string>
+    <string name="signature">Firma</string>
+    <string name="sign_here">Firma qui con il dito</string>
+    <string name="clear">Cancella</string>
+    <string name="error_code">Il codice non è corretto. Chiedilo di nuovo al destinatario.</string>
+    <string name="error_signature">Manca la firma.</string>
+    <string name="error_bags">Mancano ancora %1$d bagagli da scaricare.</string>
+    <string name="delivered_saved">Consegna salvata. Verrà inviata appena c\'è rete.</string>
+</resources>
