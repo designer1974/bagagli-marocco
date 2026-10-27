@@ -14,6 +14,9 @@ interface TripDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(trip: TripEntity)
+
+    @Query("DELETE FROM trip")
+    suspend fun deleteAll()
 }
 
 @Dao
@@ -36,6 +39,12 @@ interface StopDao {
     @Query("SELECT * FROM stops WHERE synced = 0")
     suspend fun unsynced(): List<StopEntity>
 
+    @Query("SELECT COUNT(*) FROM stops WHERE synced = 0")
+    suspend fun unsyncedCount(): Int
+
+    @Query("DELETE FROM stops")
+    suspend fun deleteAll()
+
     @Query("UPDATE stops SET synced = 1 WHERE id IN (:ids)")
     suspend fun markSynced(ids: List<Long>)
 }
@@ -56,6 +65,12 @@ interface BagDao {
 
     @Query("SELECT * FROM bags WHERE synced = 0")
     suspend fun unsynced(): List<BagEntity>
+
+    @Query("SELECT COUNT(*) FROM bags WHERE synced = 0")
+    suspend fun unsyncedCount(): Int
+
+    @Query("DELETE FROM bags")
+    suspend fun deleteAll()
 
     @Query("UPDATE bags SET synced = 1 WHERE code IN (:codes)")
     suspend fun markSynced(codes: List<String>)

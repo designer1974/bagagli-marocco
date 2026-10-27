@@ -62,4 +62,20 @@
     <string name="error_signature">Manca la firma.</string>
     <string name="error_bags">Mancano ancora %1$d bagagli da scaricare.</string>
     <string name="delivered_saved">Consegna salvata. Verrà inviata appena c\'è rete.</string>
+    <string name="login_title">Accedi con l\'account autista</string>
+    <string name="server_url">Indirizzo del server</string>
+    <string name="username">Nome utente</string>
+    <string name="password">Password</string>
+    <string name="login">Accedi</string>
+    <string name="demo_mode">Prova senza server (dati di esempio)</string>
+    <string name="demo_note">In prova i codici dei destinatari sono 1234, 5521, 4719, 8830 e 2468.</string>
+    <string name="error_server">Errore del server</string>
+    <string name="error_unsynced">Ci sono dati non ancora inviati. Collegati a internet e riprova.</string>
+    <string name="error_network">Nessuna connessione con il server. Controlla internet e riprova.</string>
+    <string name="error_url">L\'indirizzo del server deve iniziare con https://</string>
+    <string name="refreshed">Viaggio aggiornato</string>
+    <string name="refresh">Aggiorna</string>
+    <string name="logout">Esci</string>
+    <string name="no_trip">Nessun viaggio assegnato. Premi Aggiorna più tardi.</string>
+    <string name="demo_badge">PROVA</string>
 </resources>

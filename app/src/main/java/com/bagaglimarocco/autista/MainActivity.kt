@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Draw
@@ -35,7 +36,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bagaglimarocco.autista.data.Session
 import com.bagaglimarocco.autista.ui.DeliverScreen
+import com.bagaglimarocco.autista.ui.LoginScreen
 import com.bagaglimarocco.autista.ui.MainViewModel
 import com.bagaglimarocco.autista.ui.ScanScreen
 import com.bagaglimarocco.autista.ui.SignScreen
@@ -60,11 +63,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun AutistaRoot(vm: MainViewModel = viewModel()) {
-    val state by vm.state.collectAsStateWithLifecycle()
-    val lastScanned by vm.lastScanned.collectAsStateWithLifecycle(initialValue = null)
-    val nav = rememberNavController()
-    val backStack by nav.currentBackStackEntryAsState()
-    val currentRoute = backStack?.destination?.route
+    val session by vm.session.collectAsStateWithLifecycle()
+    val busy by vm.busy.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val lastWasError = remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -72,10 +72,45 @@ private fun AutistaRoot(vm: MainViewModel = viewModel()) {
     LaunchedEffect(Unit) {
         vm.messages.collect { msg ->
             lastWasError.value = msg.isError
-            snackbar.showSnackbar(context.getString(msg.res, *msg.args.toTypedArray()))
+            snackbar.showSnackbar(msg.text ?: context.getString(msg.res, *msg.args.toTypedArray()))
         }
     }
 
+    val snackbarHost: @Composable () -> Unit = {
+        SnackbarHost(snackbar) { data ->
+            val status = LocalStatus.current
+            Snackbar(
+                snackbarData = data,
+                containerColor = if (lastWasError.value) status.bad else status.ok,
+                contentColor = MaterialTheme.colorScheme.surface,
+            )
+        }
+    }
+
+    val current = session
+    if (current == null) {
+        Scaffold(snackbarHost = snackbarHost) { padding ->
+            Box(Modifier.padding(bottom = padding.calculateBottomPadding())) {
+                LoginScreen(
+                    initialServer = vm.lastServerUrl.ifBlank { BuildConfig.SERVER_URL },
+                    busy = busy,
+                    onLogin = vm::login,
+                    onDemo = vm::startDemo,
+                )
+            }
+        }
+    } else {
+        MainTabs(vm, current, busy, snackbarHost)
+    }
+}
+
+@Composable
+private fun MainTabs(vm: MainViewModel, session: Session, busy: Boolean, snackbarHost: @Composable () -> Unit) {
+    val state by vm.state.collectAsStateWithLifecycle()
+    val lastScanned by vm.lastScanned.collectAsStateWithLifecycle(initialValue = null)
+    val nav = rememberNavController()
+    val backStack by nav.currentBackStackEntryAsState()
+    val currentRoute = backStack?.destination?.route
     fun go(route: String) {
         nav.navigate(route) {
             popUpTo(nav.graph.findStartDestination().id) { saveState = true }
@@ -85,16 +120,7 @@ private fun AutistaRoot(vm: MainViewModel = viewModel()) {
     }
 
     Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbar) { data ->
-                val status = LocalStatus.current
-                Snackbar(
-                    snackbarData = data,
-                    containerColor = if (lastWasError.value) status.bad else status.ok,
-                    contentColor = MaterialTheme.colorScheme.surface,
-                )
-            }
-        },
+        snackbarHost = snackbarHost,
         bottomBar = {
             NavigationBar {
                 Tab.entries.forEach { tab ->
@@ -109,7 +135,17 @@ private fun AutistaRoot(vm: MainViewModel = viewModel()) {
         },
     ) { padding ->
         NavHost(nav, startDestination = Tab.Trip.route, modifier = Modifier.padding(padding)) {
-            composable(Tab.Trip.route) { TripScreen(state, onGoNext = { go(Tab.Deliver.route) }) }
+            composable(Tab.Trip.route) {
+                TripScreen(
+                    state = state,
+                    driverName = session.driverName,
+                    demo = session.demo,
+                    busy = busy,
+                    onGoNext = { go(Tab.Deliver.route) },
+                    onRefresh = vm::refresh,
+                    onLogout = vm::logout,
+                )
+            }
             composable(Tab.Scan.route) {
                 ScanScreen(
                     state = state,

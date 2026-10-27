@@ -14,12 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CloudDone
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.DirectionsBoat
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,7 +39,15 @@ import com.bagaglimarocco.autista.data.StopStatus
 import com.bagaglimarocco.autista.ui.theme.LocalStatus
 
 @Composable
-fun TripScreen(state: UiState, onGoNext: () -> Unit) {
+fun TripScreen(
+    state: UiState,
+    driverName: String,
+    demo: Boolean,
+    busy: Boolean,
+    onGoNext: () -> Unit,
+    onRefresh: () -> Unit,
+    onLogout: () -> Unit,
+) {
     if (state.loading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         return
@@ -57,12 +68,24 @@ fun TripScreen(state: UiState, onGoNext: () -> Unit) {
                     .padding(horizontal = 16.dp, vertical = 16.dp),
             ) {
                 val trip = state.trip
-                Text(
-                    "${stringResource(R.string.trip_title)} · ${trip?.vehiclePlate.orEmpty()}",
-                    color = Color.White.copy(alpha = 0.85f),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Text(trip?.route.orEmpty(), color = Color.White, style = MaterialTheme.typography.headlineSmall)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        listOfNotNull(driverName.ifBlank { null }, trip?.vehiclePlate).joinToString(" · "),
+                        color = Color.White.copy(alpha = 0.85f),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (demo) Pill(stringResource(R.string.demo_badge), MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.onSecondary)
+                    if (busy) {
+                        CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp, modifier = Modifier.padding(start = 8.dp).size(24.dp))
+                    } else if (!demo) {
+                        IconButton(onClick = onRefresh) { Icon(Icons.Filled.Refresh, stringResource(R.string.refresh), tint = Color.White) }
+                    }
+                    IconButton(onClick = onLogout, enabled = !busy) {
+                        Icon(Icons.AutoMirrored.Filled.Logout, stringResource(R.string.logout), tint = Color.White)
+                    }
+                }
+                Text(trip?.route ?: stringResource(R.string.trip_title), color = Color.White, style = MaterialTheme.typography.headlineSmall)
                 Row(
                     Modifier.padding(top = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -111,6 +134,11 @@ fun TripScreen(state: UiState, onGoNext: () -> Unit) {
                     }
                 }
             }
+        }
+
+        if (state.trip == null) {
+            item { EmptyNote(stringResource(R.string.no_trip)) }
+            return@LazyColumn
         }
 
         item {

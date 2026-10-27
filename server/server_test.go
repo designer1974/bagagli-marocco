@@ -206,3 +206,9 @@ func TestAdminCreatesStopAndBag(t *testing.T) {
 		t.Fatalf("bagaglio: %d %+v", code, bag)
 	}
 }
+
+func TestCodeHashMatchesAndroid(t *testing.T) {
+	if got := codeHash(1, "1234"); got != "e3ebee0ac16ab73da385eae0743463bbe5917c4ead6389d624ce91ae5360cb5f" {
+		t.Fatalf("hash diverso dall'app: %s", got)
+	}
+}

@@ -1,6 +1,7 @@
 package com.bagaglimarocco.autista.sync
 
 import android.content.Context
+import android.util.Log
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -11,32 +12,28 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.bagaglimarocco.autista.BuildConfig
-import com.bagaglimarocco.autista.data.AppDatabase
+import com.bagaglimarocco.autista.AutistaApp
+import com.bagaglimarocco.autista.data.ApiException
 import java.util.concurrent.TimeUnit
 
 /**
  * Invia al server scansioni e consegne salvate offline.
- * Gira solo con rete, riprova da solo in caso di errore e non perde mai dati:
- * un dato viene segnato come inviato solo dopo la risposta positiva del server.
+ * Gira solo con rete e riprova da solo in caso di errore; i dati restano sul telefono finché il server non conferma.
  */
 class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        // Server non ancora configurato: i dati restano al sicuro sul telefono.
-        if (BuildConfig.SERVER_URL.isBlank()) return Result.success()
-
-        val db = AppDatabase.get(applicationContext)
+        val repo = (applicationContext as AutistaApp).repository
         return try {
-            val bags = db.bagDao().unsynced()
-            val stops = db.stopDao().unsynced()
-            // TODO: inviare bags e stops (e le foto delle firme) a BuildConfig.SERVER_URL via HTTPS.
-            // Solo se il server risponde OK:
-            db.bagDao().markSynced(bags.map { it.code })
-            db.stopDao().markSynced(stops.map { it.id })
-            Result.success()
+            val remaining = repo.syncNow()
+            if (remaining > 0) Result.retry() else Result.success()
+        } catch (e: ApiException) {
+            Log.w("SyncWorker", "Server: ${e.message}")
+            // 401: l'autista deve rientrare; 4xx: non serve ritentare subito.
+            if (e.status >= 500) Result.retry() else Result.failure()
         } catch (e: Exception) {
-            if (runAttemptCount < 10) Result.retry() else Result.failure()
+            Log.w("SyncWorker", "Rete non disponibile o errore: ${e.message}")
+            if (runAttemptCount < 20) Result.retry() else Result.failure()
         }
     }
 

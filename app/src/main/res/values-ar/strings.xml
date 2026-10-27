@@ -58,4 +58,20 @@
     <string name="error_signature">التوقيع مفقود.</string>
     <string name="error_bags">لا يزال %1$d حقائب للتفريغ.</string>
     <string name="delivered_saved">تم حفظ التسليم. سيُرسل عند توفر الشبكة.</string>
+    <string name="login_title">سجّل الدخول بحساب السائق</string>
+    <string name="server_url">عنوان الخادم</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="login">دخول</string>
+    <string name="demo_mode">تجربة بدون خادم (بيانات مثال)</string>
+    <string name="demo_note">في وضع التجربة رموز المستلمين هي 1234 و5521 و4719 و8830 و2468.</string>
+    <string name="error_server">خطأ في الخادم</string>
+    <string name="error_unsynced">توجد بيانات لم تُرسل بعد. اتصل بالإنترنت وحاول مجدداً.</string>
+    <string name="error_network">لا يوجد اتصال بالخادم. تحقق من الإنترنت وحاول مجدداً.</string>
+    <string name="error_url">يجب أن يبدأ عنوان الخادم بـ https://</string>
+    <string name="refreshed">تم تحديث الرحلة</string>
+    <string name="refresh">تحديث</string>
+    <string name="logout">خروج</string>
+    <string name="no_trip">لا توجد رحلة مخصصة. اضغط تحديث لاحقاً.</string>
+    <string name="demo_badge">تجربة</string>
 </resources>

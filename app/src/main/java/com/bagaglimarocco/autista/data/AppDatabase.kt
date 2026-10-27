@@ -18,7 +18,7 @@ class Converters {
 
 @Database(
     entities = [StopEntity::class, BagEntity::class, TripEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -36,7 +36,10 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "autista.db",
-                ).build().also { instance = it }
+                )
+                    // La versione 1 conteneva solo dati di prova: si può ricreare.
+                    .fallbackToDestructiveMigrationFrom(1)
+                    .build().also { instance = it }
             }
     }
 }

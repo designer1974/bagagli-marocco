@@ -20,9 +20,11 @@ data class StopEntity(
     val longitude: Double,
     val phone: String,
     val kind: StopKind,
-    val recipientCode: String,
+    /** Impronta del codice del destinatario: si verifica offline senza conoscere il codice. */
+    val recipientCodeHash: String,
     val status: StopStatus = StopStatus.PENDING,
     val deliveredAt: Long? = null,
+    val enteredCode: String? = null,
     val signaturePath: String? = null,
     val synced: Boolean = true,
 )
@@ -39,7 +41,7 @@ data class BagEntity(
     val synced: Boolean = true,
 )
 
-/** Il traghetto del viaggio. */
+/** Il viaggio e il traghetto. */
 @Entity(tableName = "trip")
 data class TripEntity(
     @PrimaryKey val id: Long = 1,
