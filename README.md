@@ -14,7 +14,7 @@ L'autista carica i bagagli in Europa, prende il traghetto (Genova, Livorno, Sèt
 ## Tecnologie
 
 - **Android:** Kotlin + Jetpack Compose, Material 3, database locale Room, sincronizzazione con WorkManager (offline-first)
-- **Server:** Go oppure Kotlin (Ktor), PostgreSQL + PostGIS
+- **Server:** Go + SQLite, HTTPS con Caddy (vedi `server/README.md`)
 - **Mappe:** Google Maps SDK + Routes API; Waze tramite link di apertura
 - **Stabilità:** Firebase Crashlytics, test automatici, rilascio graduale
 - **Lingue:** italiano, francese, spagnolo, arabo (da destra a sinistra)
@@ -22,6 +22,7 @@ L'autista carica i bagagli in Europa, prende il traghetto (Genova, Livorno, Sèt
 ## Cartelle
 
 - `app/` — app Android dell'autista (Kotlin + Jetpack Compose)
+- `server/` — server in Go: login, viaggi, bagagli, consegne, tracciamento
 - `mockup/autista.html` — prototipo interattivo delle schermate dell'autista (apri il file nel browser)
 
 ## App Autista: cosa fa già
@@ -33,7 +34,9 @@ L'autista carica i bagagli in Europa, prende il traghetto (Genova, Livorno, Sèt
 - **Offline-first:** tutto è salvato nel database del telefono e inviato al server quando c'è rete (il server è il prossimo passo)
 - **Lingue:** italiano, francese, arabo (segue la lingua del telefono)
 
-Per ora usa **dati di esempio** (5 fermate tra Tanger e Casablanca, codici `BM-26-0400`…`BM-26-0417`).
+All'apertura l'autista accede con l'indirizzo del server, nome utente e password. Il viaggio arriva dal server; scansioni e firme tornano al server da sole quando c'è rete.
+
+Senza server si può premere **Prova senza server**: 5 fermate di esempio tra Tanger e Casablanca, codici dei destinatari 1234, 5521, 4719, 8830, 2468.
 
 ## Come provare l'app sul telefono
 
